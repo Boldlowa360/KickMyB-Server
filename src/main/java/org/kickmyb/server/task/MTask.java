@@ -28,4 +28,6 @@ public class MTask {
     @OneToOne
     public MPhoto photo;
 
+    public boolean isVisibile = true;
+
 }

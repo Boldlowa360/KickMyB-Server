@@ -34,22 +34,22 @@ public class ServiceTaskImpl implements ServiceTask {
     public TaskDetailResponse detail(Long id, MUser user) {
         //MTask element = user.tasks.stream().filter(elt -> elt.id == id).findFirst().get();
         MTask element = repo.findById(id).get();
-        TaskDetailResponse response = new TaskDetailResponse();
-        response.name = element.name;
-        response.id = element.id;
-        // calcul le temps écoulé en pourcentage
-        response.percentageTimeSpent = percentage(element.creationDate, new Date(), element.deadline);
-        // aller chercher le dernier événement de progrès
-        response.percentageDone = percentageDone(element);
-        response.deadline = element.deadline;
-        response.events = new ArrayList<>();
-        for (MProgressEvent e : element.events) {
-            ProgressEvent transfer = new ProgressEvent();
-            transfer.value = e.resultPercentage;
-            transfer.timestamp = e.timestamp;
-            response.events.add(transfer);
-        }
-        return response;
+            TaskDetailResponse response = new TaskDetailResponse();
+            response.name = element.name;
+            response.id = element.id;
+            // calcul le temps écoulé en pourcentage
+            response.percentageTimeSpent = percentage(element.creationDate, new Date(), element.deadline);
+            // aller chercher le dernier événement de progrès
+            response.percentageDone = percentageDone(element);
+            response.deadline = element.deadline;
+            response.events = new ArrayList<>();
+            for (MProgressEvent e : element.events) {
+                ProgressEvent transfer = new ProgressEvent();
+                transfer.value = e.resultPercentage;
+                transfer.timestamp = e.timestamp;
+                response.events.add(transfer);
+            }
+            return response;
     }
 
     // TODO oublier de valider pour une injection javascript
@@ -102,7 +102,9 @@ public class ServiceTaskImpl implements ServiceTask {
             r.deadline = t.deadline;
             r.percentageTimeSpent = percentage(t.creationDate, new Date(), t.deadline);
             r.name = t.name;
-            res.add(r);
+            if(t.isVisibile) {
+                res.add(r);
+            }
         }
         return res;
     }
@@ -151,6 +153,15 @@ public class ServiceTaskImpl implements ServiceTask {
             res.add(r);
         }
         return res;
+    }
+
+    @Override
+    public void deleteTask(long taskId, long userID) {
+        MUser user = repoUser.findById(userID).get();
+        MTask task = repo.findById(taskId).get();
+        if(user.tasks.contains(task)){
+            task.isVisibile = false;
+        }
     }
 
     @Override
