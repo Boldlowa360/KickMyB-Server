@@ -150,7 +150,8 @@ public class ServiceTaskImpl implements ServiceTask {
             } else {
                 r.photoId = 0L;
             }
-            res.add(r);
+            if(t.isVisibile)
+                res.add(r);
         }
         return res;
     }
@@ -160,7 +161,7 @@ public class ServiceTaskImpl implements ServiceTask {
         MUser user = repoUser.findById(userID).get();
         MTask task = repo.findById(taskId).get();
         if(user.tasks.contains(task)){
-            task.isVisibile = !task.isVisibile;
+            task.isVisibile = false;
         }
     }
 
