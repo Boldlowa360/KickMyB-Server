@@ -160,7 +160,7 @@ public class ServiceTaskImpl implements ServiceTask {
         MUser user = repoUser.findById(userID).get();
         MTask task = repo.findById(taskId).get();
         if(user.tasks.contains(task)){
-            task.isVisibile = false;
+            task.isVisibile = !task.isVisibile;
         }
     }
 
